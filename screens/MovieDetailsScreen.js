@@ -55,7 +55,7 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#141414',
+        backgroundColor: '#1C1C1E',
     },
     backButton: {
         position: 'absolute',
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     backButtonText: {
+        fontFamily: 'Geist-Bold',
         color: '#FFFFFF',
         fontSize: 16,
-        fontWeight: 'bold',
     },
     contentContainer: {
         padding: 16,
@@ -87,12 +87,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     title: {
+        fontFamily: 'Geist-Bold',
         fontSize: 28,
-        fontWeight: 'bold',
         color: '#FFFFFF',
         marginBottom: 8,
     },
     releaseDate: {
+        fontFamily: 'Geist-Regular',
         fontSize: 16,
         color: '#A0A0A0',
         marginBottom: 12,
@@ -103,18 +104,19 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     rating: {
+        fontFamily: 'Geist-Bold',
         fontSize: 16,
-        fontWeight: 'bold',
         color: '#FFD700',
         marginRight: 8,
     },
     voteCount: {
+        fontFamily: 'Geist-Regular',
         fontSize: 14,
         color: '#A0A0A0',
     },
     overviewHeader: {
+        fontFamily: 'Geist-Bold',
         fontSize: 20,
-        fontWeight: 'bold',
         color: '#FFFFFF',
         marginBottom: 8,
         borderTopColor: '#333',
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
         paddingTop: 16,
     },
     overview: {
+        fontFamily: 'Geist-Regular',
         fontSize: 16,
         color: '#E0E0E0',
         lineHeight: 24,

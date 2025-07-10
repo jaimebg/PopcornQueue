@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
         height: 60,
     },
     headerTitle: {
+        fontFamily: 'Geist-Bold',
         color: 'white',
         fontSize: 24,
-        fontWeight: 'bold',
         marginTop: 10,
     },
     cardContainer: {
@@ -209,11 +209,13 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     movieTitle: {
+        fontFamily: 'Geist-Regular',
         color: 'white',
         fontSize: 14,
         fontWeight: '600',
     },
     movieDetails: {
+        fontFamily: 'Geist-Regular',
         color: '#A9A9A9',
         fontSize: 12,
         marginTop: 4,
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     messageText: {
+        fontFamily: 'Geist-Regular',
         color: 'white',
         fontSize: 16,
         textAlign: 'center',
