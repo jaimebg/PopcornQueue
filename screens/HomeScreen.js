@@ -1,10 +1,8 @@
-import { StyleSheet, useColorScheme, View, Text, Pressable, Image, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { StyleSheet, View, Text, Pressable, Image, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import Config from "react-native-config";
 
-function Home() {
-    const navigation = useNavigation();
+function Home({ navigation }) {
     const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
     const [loading, setLoading] = useState(false);
     const [movies, setMovies] = useState([]);
