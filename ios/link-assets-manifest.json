@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Geist-Bold.ttf",
+      "sha1": "6f77f7fe020d7c92c1fb1378e6404934da6ca1ec"
+    },
+    {
+      "path": "assets/fonts/Geist-Regular.ttf",
+      "sha1": "57a31c832af425c4862cc0a1677b5d37e38ced3a"
+    }
+  ]
+}
