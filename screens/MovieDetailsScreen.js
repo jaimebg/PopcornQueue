@@ -1,11 +1,10 @@
 import { StyleSheet, useColorScheme, View, Text } from 'react-native';
 
 function MovieDetails() {
-    const isDarkMode = useColorScheme() === 'dark';
 
     return (
         <View style={styles.container}>
-            <Text style={{ color: isDarkMode ? 'white' : 'black', fontSize: 20 }}>
+            <Text style={{ color: 'white', fontSize: 20 }}>
                 Welcome to the MovieDetails Screen!
             </Text>
         </View>

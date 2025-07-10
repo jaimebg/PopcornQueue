@@ -5,7 +5,6 @@ import Home from './screens/HomeScreen';
 import MovieDetails from './screens/MovieDetailsScreen';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
   const Stack = createNativeStackNavigator();
 
   return (
