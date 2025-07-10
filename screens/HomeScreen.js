@@ -8,12 +8,14 @@ function Home() {
     const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
     const [loading, setLoading] = useState(false);
     const [movies, setMovies] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
     const fetchMovies = async () => {
-        if (loading) return;
+        if (loading || !hasMore) return;
         setLoading(true);
 
-        const url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`;
+        const url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${page}`;
         const options = {
             method: 'GET',
             headers: {
@@ -25,9 +27,12 @@ function Home() {
         try {
             const response = await fetch(url, options);
             const jsonData = await response.json();
-            console.log('Fetched movies:', jsonData.results);
-
-            setMovies(jsonData.results || []);
+            setMovies(prevMovies => [...prevMovies, ...jsonData.results]);
+            if (page >= jsonData.total_pages) {
+                setHasMore(false);
+            } else {
+                setPage(prevPage => prevPage + 1);
+            }
         } catch (err) {
             console.error('Failed to fetch movies:', err);
         } finally {
@@ -79,6 +84,10 @@ function Home() {
         return <ActivityIndicator size="large" color="#FF9811" />;
     };
 
+    const handleLoadMore = () => {
+        fetchMovies();
+    };
+
     return (
         <>
             <SafeAreaView style={styles.container}>
@@ -92,8 +101,9 @@ function Home() {
                 <FlatList
                     data={movies}
                     renderItem={moviesRender}
-                    keyExtractor={(item) => item.original_title}
+                    keyExtractor={(item) => item.id}
                     ListFooterComponent={<Loader loading={loading} />}
+                    onEndReached={handleLoadMore}
                 />
             </SafeAreaView>
         </>
