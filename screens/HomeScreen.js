@@ -1,6 +1,7 @@
 import { StyleSheet, useColorScheme, View, Text, Pressable, Image, SafeAreaView, FlatList } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useState } from 'react';
+import Config from "react-native-config";
 
 function Home() {
     const navigation = useNavigation();
