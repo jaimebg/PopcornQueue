@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, Pressable, Image, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import Config from "react-native-config";
+import { z } from 'zod';
 
 function Home({ navigation }) {
     const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -8,6 +9,30 @@ function Home({ navigation }) {
     const [movies, setMovies] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+
+    const MovieSchema = z.object({
+        id: z.number(),
+        title: z.string(),
+        poster_path: z.string(),
+        release_date: z.string(),
+        overview: z.string(),
+        adult: z.boolean(),
+        backdrop_path: z.string().nullable(),
+        genre_ids: z.array(z.number()),
+        original_language: z.string(),
+        original_title: z.string(),
+        popularity: z.number(),
+        video: z.boolean(),
+        vote_average: z.number(),
+        vote_count: z.number(),
+    });
+
+    const ApiListResponseSchema = z.object({
+        page: z.number(),
+        results: z.array(MovieSchema),
+        total_pages: z.number(),
+        total_results: z.number(),
+    });
 
     const fetchMovies = async () => {
         if (loading || !hasMore) return;
@@ -25,14 +50,25 @@ function Home({ navigation }) {
         try {
             const response = await fetch(url, options);
             const jsonData = await response.json();
-            setMovies(prevMovies => [...prevMovies, ...jsonData.results]);
-            if (page >= jsonData.total_pages) {
-                setHasMore(false);
+
+            const validatedData = ApiListResponseSchema.parse(jsonData);
+
+            if (validatedData.results && validatedData.results.length > 0) {
+                setMovies(prevMovies => [...prevMovies, ...validatedData.results]);
+                if (page >= validatedData.total_pages) {
+                    setHasMore(false);
+                } else {
+                    setPage(prevPage => prevPage + 1);
+                }
             } else {
-                setPage(prevPage => prevPage + 1);
+                setHasMore(false);
             }
         } catch (err) {
-            console.error('Failed to fetch movies:', err);
+            if (err instanceof z.ZodError) {
+                console.error('Zod validation failed:', err.errors);
+            } else {
+                console.error('Failed to fetch movies:', err);
+            }
         } finally {
             setLoading(false);
         }
