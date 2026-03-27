@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,19 +7,19 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useMovies} from '../hooks/useMovies';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMovies } from '../hooks/useMovies';
 import MovieCard from '../components/MovieCard';
 import ScreenHeader from '../components/ScreenHeader';
-import {COLORS, LAYOUT} from '../constants/theme';
-import type {Movie} from '../types/movie';
-import type {HomeScreenProps} from '../types/navigation';
+import { COLORS, LAYOUT } from '../constants/theme';
+import type { Movie } from '../types/movie';
+import type { HomeScreenProps } from '../types/navigation';
 
 const keyExtractor = (item: Movie) => item.id.toString();
 
-export default function HomeScreen({navigation}: HomeScreenProps) {
-  const {width} = useWindowDimensions();
-  const {movies, loading, refreshing, error, refresh, loadMore} = useMovies();
+export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const { width } = useWindowDimensions();
+  const { movies, loading, refreshing, error, refresh, loadMore } = useMovies();
 
   const itemWidth = useMemo(
     () =>
@@ -31,13 +31,13 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 
   const handleSelectMovie = useCallback(
     (movie: Movie) => {
-      navigation.navigate('MovieDetails', {movie});
+      navigation.navigate('MovieDetails', { movie });
     },
     [navigation],
   );
 
   const renderItem = useCallback(
-    ({item}: {item: Movie}) => (
+    ({ item }: { item: Movie }) => (
       <MovieCard
         movie={item}
         onPress={handleSelectMovie}
@@ -68,7 +68,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>
-          {error ? `\u{1F622}\n${error}` : 'No movies found.'}
+          {error ? `${error}` : 'No movies found.'}
         </Text>
       </View>
     );
