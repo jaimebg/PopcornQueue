@@ -1,6 +1,5 @@
 import type {Movie, ApiListResponse} from '../types/movie';
-
-const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+import {TMDB_IMAGE_BASE_URL} from '../constants/theme';
 
 const movie: Movie = {
   id: 1,

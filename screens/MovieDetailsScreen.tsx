@@ -1,147 +1,111 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Image,
   ScrollView,
-  Pressable,
   useWindowDimensions,
 } from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {TMDB_IMAGE_BASE_URL, COLORS} from '../constants/theme';
 import type {MovieDetailsScreenProps} from '../types/navigation';
 
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-
-const MovieDetails = ({
+export default function MovieDetailsScreen({
   route,
-  navigation,
-}: MovieDetailsScreenProps): React.JSX.Element => {
+}: MovieDetailsScreenProps) {
   const {movie} = route.params;
   const {width} = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-
-  const handleGoBack = useCallback((): void => {
-    navigation.goBack();
-  }, [navigation]);
-
-  const posterUri = `${IMAGE_BASE_URL}${movie.poster_path}`;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <Pressable style={[styles.backButton, {top: insets.top + 8}]} onPress={handleGoBack}>
-        <Text style={styles.backButtonText}>{'\u2190'} Back</Text>
-      </Pressable>
-      <ScrollView>
-        <View style={styles.contentContainer}>
-          <Image
-            source={{uri: posterUri}}
-            style={[styles.poster, {height: width * 1.2}]}
-            resizeMode="cover"
-          />
-
-          <View style={styles.detailsContainer}>
-            <Text style={styles.title}>{movie.title}</Text>
-
-            <Text style={styles.releaseDate}>
-              Release Date:{' '}
-              {new Date(movie.release_date).toLocaleDateString()}
-            </Text>
-
-            <View style={styles.ratingContainer}>
-              <Text style={styles.rating}>
-                Rating: {movie.vote_average.toFixed(1)}/10
-              </Text>
-              <Text style={styles.voteCount}>
-                ({movie.vote_count} votes)
-              </Text>
-            </View>
-
-            <Text style={styles.overviewHeader}>Overview</Text>
-            <Text style={styles.overview}>{movie.overview}</Text>
-          </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      contentInsetAdjustmentBehavior="automatic">
+      <Image
+        source={{uri: `${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}}
+        style={[styles.poster, {height: width * 1.2}]}
+        resizeMode="cover"
+      />
+      <View style={styles.details}>
+        <Text style={styles.title} selectable>
+          {movie.title}
+        </Text>
+        <Text style={styles.releaseDate}>
+          Release Date: {new Date(movie.release_date).toLocaleDateString()}
+        </Text>
+        <View style={styles.ratingRow}>
+          <Text style={styles.rating}>
+            Rating: {movie.vote_average.toFixed(1)}/10
+          </Text>
+          <Text style={styles.voteCount}>
+            ({movie.vote_count.toLocaleString()} votes)
+          </Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <Text style={styles.overviewHeader}>Overview</Text>
+        <Text style={styles.overview} selectable>
+          {movie.overview}
+        </Text>
+      </View>
+    </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: COLORS.background,
   },
-  backButton: {
-    position: 'absolute',
-    top: 0,
-    left: 16,
-    zIndex: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  backButtonText: {
-    fontFamily: 'Geist-Bold',
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  contentContainer: {
+  content: {
     padding: 16,
-    paddingTop: 80,
+    gap: 8,
   },
   poster: {
     width: '100%',
     borderRadius: 12,
-    marginBottom: 20,
-    alignSelf: 'center',
+    borderCurve: 'continuous',
   },
-  detailsContainer: {
-    flex: 1,
+  details: {
+    gap: 8,
   },
   title: {
     fontFamily: 'Geist-Bold',
     fontSize: 28,
-    color: '#FFFFFF',
-    marginBottom: 8,
+    color: COLORS.text,
   },
   releaseDate: {
     fontFamily: 'Geist-Regular',
     fontSize: 16,
-    color: '#A0A0A0',
-    marginBottom: 12,
+    color: COLORS.textMuted,
   },
-  ratingContainer: {
+  ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    gap: 8,
   },
   rating: {
     fontFamily: 'Geist-Bold',
     fontSize: 16,
-    color: '#FFD700',
-    marginRight: 8,
+    color: COLORS.rating,
+    fontVariant: ['tabular-nums'],
   },
   voteCount: {
     fontFamily: 'Geist-Regular',
     fontSize: 14,
-    color: '#A0A0A0',
+    color: COLORS.textMuted,
+    fontVariant: ['tabular-nums'],
   },
   overviewHeader: {
     fontFamily: 'Geist-Bold',
     fontSize: 20,
-    color: '#FFFFFF',
-    marginBottom: 8,
-    borderTopColor: '#333',
+    color: COLORS.text,
+    borderTopColor: COLORS.separator,
     borderTopWidth: 1,
     paddingTop: 16,
   },
   overview: {
     fontFamily: 'Geist-Regular',
     fontSize: 16,
-    color: '#E0E0E0',
+    color: COLORS.textLight,
     lineHeight: 24,
   },
 });
-
-export default MovieDetails;
