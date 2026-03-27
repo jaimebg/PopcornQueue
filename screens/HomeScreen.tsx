@@ -113,6 +113,7 @@ function Home({navigation}: HomeScreenProps): React.JSX.Element {
 
   useEffect(() => {
     fetchMovies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectMovie = (movie: Movie): void => {
