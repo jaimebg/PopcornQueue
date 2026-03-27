@@ -6,10 +6,9 @@ import {
   Image,
   ScrollView,
   Pressable,
-  SafeAreaView,
-  Platform,
   useWindowDimensions,
 } from 'react-native';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import type {MovieDetailsScreenProps} from '../types/navigation';
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -20,6 +19,7 @@ const MovieDetails = ({
 }: MovieDetailsScreenProps): React.JSX.Element => {
   const {movie} = route.params;
   const {width} = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const handleGoBack = useCallback((): void => {
     navigation.goBack();
@@ -29,7 +29,7 @@ const MovieDetails = ({
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Pressable style={styles.backButton} onPress={handleGoBack}>
+      <Pressable style={[styles.backButton, {top: insets.top + 8}]} onPress={handleGoBack}>
         <Text style={styles.backButtonText}>{'\u2190'} Back</Text>
       </Pressable>
       <ScrollView>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: Platform.OS === 'android' ? 40 : 20,
+    top: 0,
     left: 16,
     zIndex: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

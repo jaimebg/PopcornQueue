@@ -1,5 +1,6 @@
 import React from 'react';
-import {StatusBar, SafeAreaView, StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import Home from './screens/HomeScreen';
@@ -10,13 +11,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (
-    <View style={styles.rootContainer}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent={true}
-      />
-      <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider>
+      <View style={styles.rootContainer}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent={true}
+        />
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
@@ -31,8 +32,8 @@ function App(): React.JSX.Element {
             />
           </Stack.Navigator>
         </NavigationContainer>
-      </SafeAreaView>
-    </View>
+      </View>
+    </SafeAreaProvider>
   );
 }
 
@@ -40,9 +41,6 @@ const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
     backgroundColor: '#1C1C1E',
-  },
-  safeArea: {
-    flex: 1,
   },
 });
 

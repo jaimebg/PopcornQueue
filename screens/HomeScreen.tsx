@@ -5,11 +5,11 @@ import {
   Text,
   Pressable,
   Image,
-  SafeAreaView,
   FlatList,
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Config from 'react-native-config';
 import type {Movie, ApiListResponse} from '../types/movie';
 import type {HomeScreenProps} from '../types/navigation';
