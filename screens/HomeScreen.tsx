@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,20 +8,20 @@ import {
   SafeAreaView,
   FlatList,
   ActivityIndicator,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import Config from 'react-native-config';
 import type {Movie, ApiListResponse} from '../types/movie';
 import type {HomeScreenProps} from '../types/navigation';
 
-const {width, height} = Dimensions.get('window');
 const NUM_COLUMNS = 2;
 const ITEM_MARGIN = 12;
-const ITEM_WIDTH = (width - (NUM_COLUMNS + 1) * ITEM_MARGIN) / NUM_COLUMNS;
 
 interface MovieCardProps {
   movie: Movie;
   onSelectMovie: (movie: Movie) => void;
+  itemWidth: number;
+  posterHeight: number;
 }
 
 const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -33,31 +33,40 @@ const ScreenHeader = (): React.JSX.Element => (
   </View>
 );
 
-const MovieCard = ({movie, onSelectMovie}: MovieCardProps): React.JSX.Element => {
-  return (
-    <Pressable
-      style={styles.cardContainer}
-      onPress={() => onSelectMovie(movie)}>
-      <Image
-        source={{uri: `${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}}
-        style={styles.posterImage}
-        resizeMode="cover"
-      />
-      <View style={styles.infoContainer}>
-        <Text style={styles.movieTitle} numberOfLines={1}>
-          {movie.title}
-        </Text>
-        <Text style={styles.movieDetails}>
-          {movie.release_date
-            ? new Date(movie.release_date).getFullYear()
-            : 'N/A'}
-        </Text>
-      </View>
-    </Pressable>
-  );
-};
+const MovieCard = React.memo(
+  ({movie, onSelectMovie, itemWidth, posterHeight}: MovieCardProps): React.JSX.Element => {
+    return (
+      <Pressable
+        style={[styles.cardContainer, {width: itemWidth}]}
+        onPress={() => onSelectMovie(movie)}>
+        <Image
+          source={{uri: `${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}}
+          style={[styles.posterImage, {height: posterHeight}]}
+          resizeMode="cover"
+        />
+        <View style={styles.infoContainer}>
+          <Text style={styles.movieTitle} numberOfLines={1}>
+            {movie.title}
+          </Text>
+          <Text style={styles.movieDetails}>
+            {movie.release_date
+              ? new Date(movie.release_date).getFullYear()
+              : 'N/A'}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  },
+);
 
 function Home({navigation}: HomeScreenProps): React.JSX.Element {
+  const {width} = useWindowDimensions();
+  const itemWidth = useMemo(
+    () => (width - (NUM_COLUMNS + 1) * ITEM_MARGIN) / NUM_COLUMNS,
+    [width],
+  );
+  const posterHeight = useMemo(() => itemWidth * 1.5, [itemWidth]);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -116,9 +125,12 @@ function Home({navigation}: HomeScreenProps): React.JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectMovie = (movie: Movie): void => {
-    navigation.navigate('MovieDetails', {movie});
-  };
+  const handleSelectMovie = useCallback(
+    (movie: Movie): void => {
+      navigation.navigate('MovieDetails', {movie});
+    },
+    [navigation],
+  );
 
   const handleRefresh = (): void => {
     setHasMore(true);
@@ -153,7 +165,12 @@ function Home({navigation}: HomeScreenProps): React.JSX.Element {
       <FlatList
         data={movies}
         renderItem={({item}) => (
-          <MovieCard movie={item} onSelectMovie={handleSelectMovie} />
+          <MovieCard
+            movie={item}
+            onSelectMovie={handleSelectMovie}
+            itemWidth={itemWidth}
+            posterHeight={posterHeight}
+          />
         )}
         keyExtractor={(item: Movie) => item.id.toString()}
         numColumns={NUM_COLUMNS}
@@ -198,7 +215,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   cardContainer: {
-    width: ITEM_WIDTH,
     margin: ITEM_MARGIN / 2,
     backgroundColor: '#2C2C2E',
     borderRadius: 12,
@@ -206,7 +222,6 @@ const styles = StyleSheet.create({
   },
   posterImage: {
     width: '100%',
-    height: ITEM_WIDTH * 1.5,
   },
   infoContainer: {
     padding: 10,
@@ -228,7 +243,7 @@ const styles = StyleSheet.create({
   },
   centeredMessage: {
     flex: 1,
-    height: height * 0.6,
+    minHeight: 300,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -1,14 +1,14 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Image,
   ScrollView,
-  Dimensions,
-  TouchableOpacity,
+  Pressable,
   SafeAreaView,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import type {MovieDetailsScreenProps} from '../types/navigation';
 
@@ -19,23 +19,24 @@ const MovieDetails = ({
   navigation,
 }: MovieDetailsScreenProps): React.JSX.Element => {
   const {movie} = route.params;
+  const {width} = useWindowDimensions();
 
-  const handleGoBack = (): void => {
+  const handleGoBack = useCallback((): void => {
     navigation.goBack();
-  };
+  }, [navigation]);
 
   const posterUri = `${IMAGE_BASE_URL}${movie.poster_path}`;
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+      <Pressable style={styles.backButton} onPress={handleGoBack}>
         <Text style={styles.backButtonText}>{'\u2190'} Back</Text>
-      </TouchableOpacity>
+      </Pressable>
       <ScrollView>
         <View style={styles.contentContainer}>
           <Image
             source={{uri: posterUri}}
-            style={styles.poster}
+            style={[styles.poster, {height: width * 1.2}]}
             resizeMode="cover"
           />
 
@@ -65,8 +66,6 @@ const MovieDetails = ({
   );
 };
 
-const {width} = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -93,7 +92,6 @@ const styles = StyleSheet.create({
   },
   poster: {
     width: '100%',
-    height: width * 1.2,
     borderRadius: 12,
     marginBottom: 20,
     alignSelf: 'center',
